@@ -88,18 +88,33 @@ router.get('/:id/comments', async (req, res) => {
   }
 });
 
-// Post a new comment for a specific teacher
 router.post('/:id/comments', async (req, res) => {
   try {
-    const newComment = new Comment({
-      teacher: req.params.id,
-      text: req.body.text,
-    });
-    const savedComment = await newComment.save();
-    res.json(savedComment);
+      const { text, rating } = req.body;
+      const newComment = new Comment({
+          teacher: req.params.id,
+          text,
+          rating,  // Save the rating with the comment
+      });
+
+      const savedComment = await newComment.save();
+
+      // Calculate the new average rating
+      const teacher = await Teacher.findById(req.params.id);
+      const comments = await Comment.find({ teacher: req.params.id });
+
+      const averageRating = comments.reduce((sum, comment) => sum + comment.rating, 0) / comments.length;
+
+      // Update the teacher's rating
+      teacher.rating = averageRating;
+      await teacher.save();
+
+      res.json(savedComment);
   } catch (error) {
-    res.status(500).send('Server error');
+      res.status(500).send('Server error');
   }
 });
+
+
 
 module.exports = router;

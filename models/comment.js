@@ -10,12 +10,12 @@ const commentSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  createdAt: {
-    type: Date,
-    default: Date.now,
+  rating: {
+    type: Number,
+    required: true,
+    min: 1,
+    max: 5,
   },
 });
 
-const Comment = mongoose.model('Comment', commentSchema);
-
-module.exports = Comment;
+module.exports = mongoose.model('Comment', commentSchema);
