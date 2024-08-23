@@ -94,7 +94,7 @@ router.post('/:id/comments', async (req, res) => {
       const newComment = new Comment({
           teacher: req.params.id,
           text,
-          rating,  // Save the rating with the comment
+          rating,
       });
 
       const savedComment = await newComment.save();
@@ -114,6 +114,7 @@ router.post('/:id/comments', async (req, res) => {
       res.status(500).send('Server error');
   }
 });
+
 
 
 
